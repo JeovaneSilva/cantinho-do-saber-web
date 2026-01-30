@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Quicksand:wght@400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    /* Warm educational palette */
+    --background: 40 33% 98%;
+    --foreground: 220 25% 20%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 25% 20%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 25% 20%;
+
+    /* Teal - Primary educational color */
+    --primary: 180 45% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Coral - Warm accent */
+    --secondary: 15 75% 65%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Soft beige */
+    --muted: 35 30% 92%;
+    --muted-foreground: 220 15% 45%;
+
+    /* Amber accent */
+    --accent: 38 92% 60%;
+    --accent-foreground: 220 25% 15%;
+
+    /* Status colors */
+    --success: 152 55% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 55%;
+    --warning-foreground: 220 25% 15%;
+
+    --destructive: 0 72% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 35 25% 88%;
+    --input: 35 25% 88%;
+    --ring: 180 45% 35%;
+
+    --radius: 0.75rem;
+
+    /* Sidebar - Educational warm tones */
+    --sidebar-background: 180 45% 25%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 180 45% 25%;
+    --sidebar-accent: 180 40% 30%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 180 35% 35%;
+    --sidebar-ring: 38 92% 60%;
+
+    /* Custom gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(180 45% 35%), hsl(180 50% 45%));
+    --gradient-secondary: linear-gradient(135deg, hsl(15 75% 65%), hsl(25 80% 70%));
+    --gradient-accent: linear-gradient(135deg, hsl(38 92% 55%), hsl(45 95% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(180 45% 30%), hsl(180 50% 40%), hsl(38 90% 60%));
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(220 25% 20% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 25% 20% / 0.08), 0 2px 4px -2px hsl(220 25% 20% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(220 25% 20% / 0.08), 0 4px 6px -4px hsl(220 25% 20% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(220 25% 20% / 0.1), 0 8px 10px -6px hsl(220 25% 20% / 0.05);
+    --shadow-card: 0 1px 3px 0 hsl(220 25% 20% / 0.06), 0 1px 2px -1px hsl(220 25% 20% / 0.06);
+    --shadow-card-hover: 0 10px 20px -5px hsl(180 45% 35% / 0.15), 0 4px 6px -4px hsl(220 25% 20% / 0.08);
+  }
+
+  .dark {
+    --background: 220 25% 12%;
+    --foreground: 40 20% 95%;
+
+    --card: 220 25% 16%;
+    --card-foreground: 40 20% 95%;
+
+    --popover: 220 25% 16%;
+    --popover-foreground: 40 20% 95%;
+
+    --primary: 180 50% 50%;
+    --primary-foreground: 220 25% 10%;
+
+    --secondary: 15 65% 55%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 220 20% 22%;
+    --muted-foreground: 220 15% 65%;
+
+    --accent: 38 85% 55%;
+    --accent-foreground: 220 25% 10%;
+
+    --destructive: 0 62% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 20% 25%;
+    --input: 220 20% 25%;
+    --ring: 180 50% 50%;
+
+    --sidebar-background: 220 25% 10%;
+    --sidebar-foreground: 40 20% 95%;
+    --sidebar-primary: 180 50% 50%;
+    --sidebar-primary-foreground: 220 25% 10%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 40 20% 95%;
+    --sidebar-border: 220 20% 22%;
+    --sidebar-ring: 38 85% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Nunito', sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Quicksand', sans-serif;
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .card-educational {
+    @apply bg-card rounded-xl border border-border p-6;
+    box-shadow: var(--shadow-card);
+    transition: all 0.3s ease;
+  }
+
+  .card-educational:hover {
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+  }
+
+  .stat-card {
+    @apply relative overflow-hidden rounded-xl p-6 text-white;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute inset-0 opacity-20;
+    background: radial-gradient(circle at top right, white 0%, transparent 60%);
+  }
+
+  .gradient-primary {
+    background: var(--gradient-primary);
+  }
+
+  .gradient-secondary {
+    background: var(--gradient-secondary);
+  }
+
+  .gradient-accent {
+    background: var(--gradient-accent);
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .badge-success {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background-color: hsl(var(--success) / 0.15);
+    color: hsl(var(--success));
+  }
+
+  .badge-warning {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background-color: hsl(var(--warning) / 0.15);
+    color: hsl(var(--warning));
+  }
+
+  .badge-destructive {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+    background-color: hsl(var(--destructive) / 0.15);
+    color: hsl(var(--destructive));
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-sidebar-foreground/80 transition-all duration-200;
+  }
+
+  .sidebar-link:hover {
+    @apply bg-sidebar-accent text-sidebar-accent-foreground;
+  }
+
+  .sidebar-link.active {
+    @apply bg-sidebar-accent text-sidebar-primary font-semibold;
+  }
+
+  .page-container {
+    @apply min-h-screen bg-background;
+  }
+
+  .content-area {
+    @apply p-6 lg:p-8;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
