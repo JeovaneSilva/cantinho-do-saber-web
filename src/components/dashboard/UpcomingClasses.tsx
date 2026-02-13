@@ -1,57 +1,51 @@
+import { Aula } from '@/services/agenda';
 import { Clock, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
-interface ClassItem {
-  id: number;
-  studentName: string;
-  subject: string;
-  time: string;
-  teacher: string;
+interface UpcomingClassesProps {
+  aulas: Aula[];
 }
 
-const upcomingClasses: ClassItem[] = [
-  { id: 1, studentName: 'João Silva', subject: 'Matemática', time: '14:00', teacher: 'Prof. Maria' },
-  { id: 2, studentName: 'Ana Costa', subject: 'Português', time: '15:30', teacher: 'Prof. Maria' },
-  { id: 3, studentName: 'Pedro Santos', subject: 'Ciências', time: '16:30', teacher: 'Prof. Carla' },
-  { id: 4, studentName: 'Maria Oliveira', subject: 'História', time: '17:30', teacher: 'Prof. Maria' },
-];
-
-export function UpcomingClasses() {
+export function UpcomingClasses({ aulas }: UpcomingClassesProps) {
   return (
-    <div className="card-educational animate-slide-up">
+    <div className="card-educational h-full">
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-display text-lg font-bold text-foreground">
-          Próximas Aulas
-        </h3>
-        <span className="text-sm text-muted-foreground">Hoje</span>
+        <h3 className="font-display text-lg font-bold text-foreground">Próximas Aulas</h3>
+        <span className="text-xs text-muted-foreground">Hoje</span>
       </div>
-      
+
       <div className="space-y-4">
-        {upcomingClasses.map((classItem) => (
-          <div 
-            key={classItem.id}
-            className="flex items-center gap-4 p-3 rounded-lg bg-muted/50 hover:bg-muted transition-colors"
-          >
-            <div className="w-12 h-12 rounded-lg gradient-primary flex items-center justify-center text-primary-foreground">
-              <Clock className="w-5 h-5" />
+        {aulas.length === 0 ? (
+          <p className="text-muted-foreground text-sm">Nenhuma aula agendada para hoje.</p>
+        ) : (
+          aulas.map((aula) => (
+            <div key={aula.id} className="flex items-center p-3 rounded-lg bg-muted/30 border border-border">
+              <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary mr-4">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-sm text-foreground">
+                  {aula.alunos.map(a => a.nome.split(' ')[0]).join(', ')}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {/* Se tiver matéria no backend, mostre aqui. Ex: Matemática */}
+                  Aula Regular
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="font-bold text-sm text-foreground">{aula.horarioInicio}</p>
+                <p className="text-xs text-muted-foreground">até {aula.horarioFim}</p>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="font-semibold text-foreground truncate">
-                {classItem.studentName}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                {classItem.subject} • {classItem.teacher}
-              </p>
-            </div>
-            <div className="text-right">
-              <p className="font-bold text-primary">{classItem.time}</p>
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
       
-      <button className="w-full mt-4 py-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-        Ver agenda completa →
-      </button>
+      <div className="mt-6 text-center">
+        <Link to="/agenda" className="text-sm text-primary font-medium hover:underline">
+          Ver agenda completa →
+        </Link>
+      </div>
     </div>
   );
 }

@@ -1,50 +1,50 @@
 import { useState } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { ChevronLeft, ChevronRight, Plus, Clock, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Plus, Clock, User, Users, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAgenda } from '@/hooks/useAgenda';
+import { Aula, aulasService } from '@/services/agenda';
+import { ClassDetailsModal } from '@/components/class/ClassDetailsModal';
+import { ClassFormModal } from '@/components/class/ClassFormModal';
 
-interface ClassEvent {
-  id: number;
-  studentName: string;
-  subject: string;
-  teacher: string;
-  startTime: string;
-  endTime: string;
-  color: string;
-}
-
-const weekDays = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
 const weekDaysShort = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+const weekDaysFull = ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado'];
 
-const classEvents: Record<number, ClassEvent[]> = {
-  1: [ // Monday
-    { id: 1, studentName: 'João Silva', subject: 'Matemática', teacher: 'Prof. Maria', startTime: '14:00', endTime: '15:00', color: 'gradient-primary' },
-    { id: 2, studentName: 'Ana Costa', subject: 'Português', teacher: 'Prof. Maria', startTime: '15:30', endTime: '16:30', color: 'gradient-secondary' },
-    { id: 3, studentName: 'Lucas Ferreira', subject: 'Física', teacher: 'Prof. Carla', startTime: '17:00', endTime: '18:00', color: 'gradient-accent text-accent-foreground' },
-  ],
-  2: [ // Tuesday
-    { id: 4, studentName: 'Maria Oliveira', subject: 'História', teacher: 'Prof. Maria', startTime: '14:00', endTime: '15:00', color: 'gradient-primary' },
-    { id: 5, studentName: 'Pedro Santos', subject: 'Ciências', teacher: 'Prof. Carla', startTime: '16:00', endTime: '17:00', color: 'bg-success' },
-  ],
-  3: [ // Wednesday
-    { id: 6, studentName: 'Julia Mendes', subject: 'Inglês', teacher: 'Prof. Maria', startTime: '14:30', endTime: '15:30', color: 'gradient-secondary' },
-    { id: 7, studentName: 'João Silva', subject: 'Matemática', teacher: 'Prof. Maria', startTime: '16:00', endTime: '17:00', color: 'gradient-primary' },
-    { id: 8, studentName: 'Ana Costa', subject: 'Redação', teacher: 'Prof. Maria', startTime: '17:30', endTime: '18:30', color: 'gradient-accent text-accent-foreground' },
-  ],
-  4: [ // Thursday
-    { id: 9, studentName: 'Pedro Santos', subject: 'Ciências', teacher: 'Prof. Carla', startTime: '14:00', endTime: '15:00', color: 'bg-success' },
-    { id: 10, studentName: 'Maria Oliveira', subject: 'Geografia', teacher: 'Prof. Maria', startTime: '15:30', endTime: '16:30', color: 'gradient-primary' },
-  ],
-  5: [ // Friday
-    { id: 11, studentName: 'Lucas Ferreira', subject: 'Matemática', teacher: 'Prof. Maria', startTime: '14:00', endTime: '15:00', color: 'gradient-primary' },
-    { id: 12, studentName: 'Julia Mendes', subject: 'Espanhol', teacher: 'Prof. Carla', startTime: '15:30', endTime: '16:30', color: 'gradient-secondary' },
-    { id: 13, studentName: 'João Silva', subject: 'Física', teacher: 'Prof. Carla', startTime: '17:00', endTime: '18:00', color: 'gradient-accent text-accent-foreground' },
-  ],
+const getAulaColor = (id: number) => {
+  const colors = [
+    'gradient-primary',
+    'gradient-secondary',
+    'gradient-accent text-accent-foreground',
+    'bg-success/20 text-success-foreground border-success',
+    'bg-warning/20 text-warning-foreground border-warning'
+  ];
+  return colors[id % colors.length];
+};
+
+// FUNÇÃO NOVA: Formata para Primeiro + Segundo nome
+const formatName = (fullName: string) => {
+  const parts = fullName.trim().split(' ');
+  if (parts.length <= 1) return parts[0];
+  // Retorna "Nome Sobrenome" (apenas os 2 primeiros)
+  return `${parts[0]} ${parts[1]}`;
 };
 
 export default function Agenda() {
-  const [currentDate, setCurrentDate] = useState(new Date());
-  const [selectedDay, setSelectedDay] = useState(new Date().getDay());
+  const { currentDate, selectDate, aulas, isLoading, refreshAgenda } = useAgenda();
+  
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [selectedAula, setSelectedAula] = useState<Aula | null>(null);
+
+  const handleCreateClass = async (data: any) => {
+    await aulasService.create({ ...data, professorId: 1 });
+    refreshAgenda();
+  };
+
+  const navigateWeek = (direction: 'prev' | 'next') => {
+    const newDate = new Date(currentDate);
+    newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
+    selectDate(newDate);
+  };
 
   const getWeekDates = () => {
     const startOfWeek = new Date(currentDate);
@@ -60,143 +60,124 @@ export default function Agenda() {
 
   const weekDates = getWeekDates();
 
-  const navigateWeek = (direction: 'prev' | 'next') => {
-    const newDate = new Date(currentDate);
-    newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7));
-    setCurrentDate(newDate);
-  };
-
-  const selectedDayEvents = classEvents[selectedDay] || [];
-
   return (
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in">
           <div>
-            <h1 className="text-3xl font-display font-bold text-foreground">
-              Agenda
-            </h1>
-            <p className="text-muted-foreground mt-1">
-              Visualize e gerencie as aulas da semana
-            </p>
+            <h1 className="text-3xl font-display font-bold text-foreground">Agenda</h1>
+            <p className="text-muted-foreground mt-1">Visualize e gerencie as aulas da semana</p>
           </div>
-          <button className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg gradient-primary text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity">
-            <Plus className="w-5 h-5" />
-            Nova Aula
+          <button 
+            onClick={() => setIsCreateOpen(true)}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg gradient-primary text-primary-foreground font-semibold shadow-lg hover:opacity-90 transition-opacity"
+          >
+            <Plus className="w-5 h-5" /> Nova Aula
           </button>
         </div>
 
-        {/* Week Navigation */}
+        {/* Navegação Semanal */}
         <div className="card-educational animate-slide-up">
           <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => navigateWeek('prev')}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-            >
+            <button onClick={() => navigateWeek('prev')} className="p-2 rounded-lg hover:bg-muted transition-colors">
               <ChevronLeft className="w-5 h-5 text-muted-foreground" />
             </button>
-            <h2 className="font-display font-bold text-lg text-foreground">
+            <h2 className="font-display font-bold text-lg text-foreground capitalize">
               {currentDate.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
             </h2>
-            <button
-              onClick={() => navigateWeek('next')}
-              className="p-2 rounded-lg hover:bg-muted transition-colors"
-            >
+            <button onClick={() => navigateWeek('next')} className="p-2 rounded-lg hover:bg-muted transition-colors">
               <ChevronRight className="w-5 h-5 text-muted-foreground" />
             </button>
           </div>
 
-          {/* Week Days */}
           <div className="grid grid-cols-7 gap-2">
             {weekDates.map((date, index) => {
+              const isSelected = date.toDateString() === currentDate.toDateString();
               const isToday = date.toDateString() === new Date().toDateString();
-              const isSelected = index === selectedDay;
-              const hasEvents = classEvents[index] && classEvents[index].length > 0;
 
               return (
                 <button
                   key={index}
-                  onClick={() => setSelectedDay(index)}
+                  onClick={() => selectDate(date)}
                   className={cn(
-                    "flex flex-col items-center p-3 rounded-xl transition-all",
-                    isSelected
-                      ? "bg-primary text-primary-foreground"
-                      : isToday
-                      ? "bg-accent/20 text-accent-foreground"
-                      : "hover:bg-muted"
+                    "flex flex-col items-center p-3 rounded-xl transition-all relative overflow-hidden",
+                    isSelected ? "bg-primary text-primary-foreground shadow-md transform scale-105" : 
+                    isToday ? "bg-accent/20 text-accent-foreground ring-1 ring-accent" : 
+                    "hover:bg-muted text-muted-foreground hover:text-foreground"
                   )}
                 >
-                  <span className="text-xs font-medium opacity-70 hidden sm:block">
-                    {weekDaysShort[index]}
-                  </span>
-                  <span className="text-lg font-bold">{date.getDate()}</span>
-                  {hasEvents && !isSelected && (
-                    <div className="w-1.5 h-1.5 rounded-full bg-secondary mt-1" />
-                  )}
+                  <span className="text-xs font-medium opacity-80 hidden sm:block">{weekDaysShort[index]}</span>
+                  <span className={cn("text-lg font-bold", isSelected ? "text-white" : "")}>{date.getDate()}</span>
+                  {isToday && !isSelected && <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-primary" />}
                 </button>
               );
             })}
           </div>
         </div>
 
-        {/* Day Events */}
+        {/* Lista de Aulas */}
         <div className="animate-slide-up">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-display font-bold text-xl text-foreground">
-              {weekDays[selectedDay]}, {weekDates[selectedDay].toLocaleDateString('pt-BR')}
+              {weekDaysFull[currentDate.getDay()]}, {currentDate.toLocaleDateString('pt-BR')}
             </h3>
-            <span className="text-sm text-muted-foreground">
-              {selectedDayEvents.length} aula{selectedDayEvents.length !== 1 ? 's' : ''}
-            </span>
+            <span className="text-sm text-muted-foreground">{aulas.length} aula{aulas.length !== 1 ? 's' : ''}</span>
           </div>
 
-          {selectedDayEvents.length > 0 ? (
+          {isLoading ? (
+             <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+          ) : aulas.length > 0 ? (
             <div className="space-y-4">
-              {selectedDayEvents.map((event) => (
+              {aulas.map((aula) => (
                 <div
-                  key={event.id}
-                  className="card-educational flex items-center gap-4 group"
+                  key={aula.id}
+                  onClick={() => setSelectedAula(aula)}
+                  className="card-educational flex items-center gap-4 group hover:border-primary/50 transition-colors cursor-pointer"
                 >
-                  <div className={cn("w-2 h-16 rounded-full", event.color)} />
+                  <div className={cn("w-1.5 h-16 rounded-full self-stretch my-auto", getAulaColor(aula.id))} />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                      <User className="w-4 h-4 text-muted-foreground" />
-                      <h4 className="font-semibold text-foreground truncate">
-                        {event.studentName}
+                      {aula.alunos.length > 1 ? <Users className="w-4 h-4 text-muted-foreground" /> : <User className="w-4 h-4 text-muted-foreground" />}
+                      
+                      {/* APLICAÇÃO DA FORMATAÇÃO DE NOME AQUI */}
+                      <h4 className="font-semibold text-foreground truncate text-base">
+                        {aula.alunos.length > 0 
+                          ? aula.alunos.map(a => formatName(a.nome)).join(', ') 
+                          : 'Sem alunos'}
                       </h4>
+                    
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                      {event.subject} • {event.teacher}
-                    </p>
+                    <p className="text-sm text-muted-foreground">{aula.observacoes || 'Aula regular'}</p>
                   </div>
-                  <div className="text-right">
-                    <div className="flex items-center gap-1.5 text-primary font-bold">
-                      <Clock className="w-4 h-4" />
-                      {event.startTime}
+                  <div className="text-right min-w-[80px]">
+                    <div className="flex items-center justify-end gap-1.5 text-primary font-bold">
+                      <Clock className="w-4 h-4" />{aula.horarioInicio}
                     </div>
-                    <p className="text-xs text-muted-foreground mt-0.5">
-                      até {event.endTime}
-                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">até {aula.horarioFim}</p>
                   </div>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="card-educational text-center py-12">
-              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4">
-                <Clock className="w-8 h-8 text-muted-foreground" />
-              </div>
-              <p className="text-muted-foreground">
-                Nenhuma aula agendada para este dia
-              </p>
-              <button className="mt-4 text-primary font-medium hover:underline">
-                Agendar nova aula
-              </button>
+            <div className="card-educational text-center py-12 border-dashed">
+              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mx-auto mb-4"><Clock className="w-8 h-8 text-muted-foreground" /></div>
+              <p className="text-muted-foreground">Nenhuma aula agendada para este dia.</p>
+              <button onClick={() => setIsCreateOpen(true)} className="mt-4 text-primary font-medium hover:underline">Agendar nova aula</button>
             </div>
           )}
         </div>
       </div>
+
+      <ClassFormModal isOpen={isCreateOpen} onClose={() => setIsCreateOpen(false)} onSubmit={handleCreateClass} />
+      
+    
+      <ClassDetailsModal 
+        isOpen={!!selectedAula} 
+        onClose={() => setSelectedAula(null)} 
+        aula={selectedAula} 
+        onUpdate={refreshAgenda} 
+      />
     </MainLayout>
   );
 }
