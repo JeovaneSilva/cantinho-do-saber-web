@@ -9,10 +9,10 @@ import {
   LogOut,
   Menu,
   X,
-  BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/hooks/useAuth'; 
+import logo from '../../../public/logo-cantinho-do-saber.jpeg'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
@@ -54,10 +54,8 @@ export function Sidebar() {
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-sidebar-border">
-            <Link to="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl gradient-accent flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-accent-foreground" />
-              </div>
+            <div className="flex items-center gap-3">
+                <img src={logo} alt="" className="w-11 h-11 rounded-xl gradient-accent flex items-center justify-center" />
               <div>
                 <h1 className="font-display font-bold text-lg text-sidebar-foreground">
                   Cantinho do Saber
@@ -66,7 +64,7 @@ export function Sidebar() {
                   Reforço Escolar
                 </p>
               </div>
-            </Link>
+            </div>
             <button 
               onClick={() => setMobileOpen(false)}
               className="lg:hidden p-1 text-sidebar-foreground/60 hover:text-sidebar-foreground"

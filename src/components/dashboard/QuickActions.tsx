@@ -34,7 +34,7 @@ const actions = [
 
 export function QuickActions() {
   return (
-    <div className="card-educational animate-slide-up">
+    <div className="card-educational h-[400px] animate-slide-up">
       <h3 className="font-display text-lg font-bold text-foreground mb-6">
         Ações Rápidas
       </h3>

@@ -21,11 +21,9 @@ const getAulaColor = (id: number) => {
   return colors[id % colors.length];
 };
 
-// FUNÇÃO NOVA: Formata para Primeiro + Segundo nome
 const formatName = (fullName: string) => {
   const parts = fullName.trim().split(' ');
   if (parts.length <= 1) return parts[0];
-  // Retorna "Nome Sobrenome" (apenas os 2 primeiros)
   return `${parts[0]} ${parts[1]}`;
 };
 
@@ -63,7 +61,6 @@ export default function Agenda() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground">Agenda</h1>
@@ -77,7 +74,6 @@ export default function Agenda() {
           </button>
         </div>
 
-        {/* Navegação Semanal */}
         <div className="card-educational animate-slide-up">
           <div className="flex items-center justify-between mb-6">
             <button onClick={() => navigateWeek('prev')} className="p-2 rounded-lg hover:bg-muted transition-colors">
@@ -116,7 +112,6 @@ export default function Agenda() {
           </div>
         </div>
 
-        {/* Lista de Aulas */}
         <div className="animate-slide-up">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-display font-bold text-xl text-foreground">
@@ -140,7 +135,6 @@ export default function Agenda() {
                     <div className="flex items-center gap-2 mb-1">
                       {aula.alunos.length > 1 ? <Users className="w-4 h-4 text-muted-foreground" /> : <User className="w-4 h-4 text-muted-foreground" />}
                       
-                      {/* APLICAÇÃO DA FORMATAÇÃO DE NOME AQUI */}
                       <h4 className="font-semibold text-foreground truncate text-base">
                         {aula.alunos.length > 0 
                           ? aula.alunos.map(a => formatName(a.nome)).join(', ') 

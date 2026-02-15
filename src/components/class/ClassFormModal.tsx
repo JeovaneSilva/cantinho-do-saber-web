@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Clock, Calendar, Users, Plus, X } from 'lucide-react';
+import { Clock, Calendar, Plus, X } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { PREDEFINED_TIMES, DAYS_OPTIONS } from '@/lib/constants';
-import { cn } from '@/lib/utils';
 import { DiaSemana } from '@/services/agenda';
 import { Aluno, alunosService } from '@/services/alunos';
 import { Modal } from '../ui/modal';
@@ -26,7 +25,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
   const [availableStudents, setAvailableStudents] = useState<Aluno[]>([]);
   const [selectedStudentIds, setSelectedStudentIds] = useState<number[]>([]);
   
-  // Estado para o Select de Alunos
   const [currentStudentSelect, setCurrentStudentSelect] = useState("");
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm({
@@ -56,7 +54,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
 
   const handleFormSubmit = async (data: any) => {
     try {
-      // Calcula horário fim (Sempre +1 hora)
       const [hour] = data.horarioInicio.split(':');
       const nextHour = String(Number(hour) + 1).padStart(2, '0');
       const horarioFim = `${nextHour}:00`;
@@ -85,7 +82,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         
         <div className="grid grid-cols-2 gap-4">
-          {/* Dia da Semana */}
           <div>
             <label className="block text-sm font-medium mb-1.5">Dia da Semana</label>
             <div className="relative">
@@ -98,7 +94,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
             </div>
           </div>
 
-          {/* Horário (Predefinido) */}
           <div>
             <label className="block text-sm font-medium mb-1.5">Horário de Início</label>
             <div className="relative">
@@ -112,7 +107,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
           </div>
         </div>
 
-        {/* Seleção de Alunos */}
         <div>
           <label className="block text-sm font-medium mb-1.5">Adicionar Alunos</label>
           <div className="flex gap-2">
@@ -136,7 +130,6 @@ export function ClassFormModal({ isOpen, onClose, onSubmit }: ClassFormModalProp
             </button>
           </div>
           
-          {/* Lista de Selecionados */}
           {selectedStudentIds.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-2">
               {selectedStudentIds.map(id => {

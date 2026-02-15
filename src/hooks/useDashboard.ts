@@ -12,8 +12,6 @@ export interface DashboardStats {
   aulasHojeCount: number;
   aulasHoje: Aula[];
   pagamentosRecentes: Pagamento[];
-  resumoFinanceiroSemana: number;
-  aulasRealizadasSemana: number; // Simulado para o exemplo
 }
 
 export function useDashboard() {
@@ -24,8 +22,6 @@ export function useDashboard() {
     aulasHojeCount: 0,
     aulasHoje: [],
     pagamentosRecentes: [],
-    resumoFinanceiroSemana: 0,
-    aulasRealizadasSemana: 0,
   });
   
   const [isLoading, setIsLoading] = useState(true);
@@ -34,50 +30,87 @@ export function useDashboard() {
   const fetchDashboardData = useCallback(async () => {
     try {
       setIsLoading(true);
+      const agora = new Date();
 
-      // 1. Converter dia de hoje (JS 0-6) para Enum do Prisma
-      const diasSemanaMap = [
-        DiaSemana.DOMINGO, DiaSemana.SEGUNDA, DiaSemana.TERCA, 
-        DiaSemana.QUARTA, DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SABADO
-      ];
-      const diaHojeEnum = diasSemanaMap[new Date().getDay()];
+      const inicioSemana = new Date(agora);
+      inicioSemana.setDate(agora.getDate() - agora.getDay());
+      inicioSemana.setHours(0, 0, 0, 0);
 
-      // 2. Buscar dados em paralelo
-      const [alunos, aulasHoje, pagamentos, materiais] = await Promise.all([
+    
+      const diaEnumToIndex: Record<string, number> = {
+        'DOMINGO': 0, 'SEGUNDA': 1, 'TERCA': 2, 'QUARTA': 3,
+        'QUINTA': 4, 'SEXTA': 5, 'SABADO': 6
+      };
+
+      const [alunos, todasAulas, pagamentos, materiais] = await Promise.all([
         alunosService.findAll(),
-        aulasService.findAll(diaHojeEnum), // Busca só aulas de hoje
+        aulasService.findAll(), 
         pagamentosService.findAll(),
         materiaisService.findAll(),
       ]);
 
-      // 3. Processar Pagamentos Pendentes
+      const diasSemanaMap = [
+        DiaSemana.DOMINGO, DiaSemana.SEGUNDA, DiaSemana.TERCA, 
+        DiaSemana.QUARTA, DiaSemana.QUINTA, DiaSemana.SEXTA, DiaSemana.SABADO
+      ];
+      const diaHojeEnum = diasSemanaMap[agora.getDay()];
+
+      const aulasDoDia = todasAulas.filter(a => a.diaSemana === diaHojeEnum);
+      
+      const aulasFuturas: Aula[] = [];
+      const aulasPassadas: Aula[] = [];
+
+      aulasDoDia.forEach(aula => {
+        const [horaFim, minFim] = aula.horarioFim.split(':').map(Number);
+        const dataFimAula = new Date(agora);
+        dataFimAula.setHours(horaFim, minFim, 0, 0);
+
+        if (dataFimAula < agora) {
+          aulasPassadas.push(aula);
+        } else {
+          aulasFuturas.push(aula);
+        }
+      });
+
+      const sortPorHorario = (a: Aula, b: Aula) => a.horarioInicio.localeCompare(b.horarioInicio);
+      aulasFuturas.sort(sortPorHorario);
+      aulasPassadas.sort(sortPorHorario);
+
+      const aulasHojeOrdenadas = [...aulasFuturas, ...aulasPassadas];
+
+
+      // --- LÓGICA DE AULAS REALIZADAS NA SEMANA ---
+      // let aulasRealizadasCount = 0;
+
+      // todasAulas.forEach(aula => {
+      //   const diaIndex = diaEnumToIndex[aula.diaSemana];
+        
+      //   // Calcula a data exata dessa aula na semana atual
+      //   const dataAulaFim = new Date(inicioSemana);
+      //   dataAulaFim.setDate(inicioSemana.getDate() + diaIndex);
+        
+      //   const [horas, minutos] = aula.horarioFim.split(':').map(Number);
+      //   dataAulaFim.setHours(horas, minutos, 0, 0);
+
+      //   // Se a data/hora de término da aula é menor que AGORA, ela já aconteceu
+      //   if (dataAulaFim < agora) {
+      //     aulasRealizadasCount++;
+      //   }
+      // });
+      
       const totalPendente = pagamentos
         .filter(p => p.status === 'PENDENTE')
         .reduce((acc, curr) => acc + Number(curr.valor), 0);
 
-      // 4. Processar Pagamentos da Semana (Exemplo: pagos recentemente)
-      const totalSemana = pagamentos
-        .filter(p => p.status === 'PAGO') // Idealmente filtraria por data
-        .reduce((acc, curr) => acc + Number(curr.valor), 0);
-
-      // 5. Ordenar Aulas por horário
-      const aulasOrdenadas = aulasHoje.sort((a, b) => 
-        a.horarioInicio.localeCompare(b.horarioInicio)
-      );
-
-      // 6. Pegar últimos 5 pagamentos
-      const ultimosPagamentos = pagamentos
-        .slice(0, 5); // Assumindo que o backend já traz ordenado ou ordenamos aqui
+      const ultimosPagamentos = pagamentos.slice(0, 5);
 
       setStats({
         totalAlunos: alunos.length,
         totalMateriais: materiais.length,
         pagamentosPendentes: totalPendente,
-        aulasHojeCount: aulasHoje.length,
-        aulasHoje: aulasOrdenadas,
+        aulasHojeCount: aulasFuturas.length, 
+        aulasHoje: aulasHojeOrdenadas, 
         pagamentosRecentes: ultimosPagamentos,
-        resumoFinanceiroSemana: totalSemana,
-        aulasRealizadasSemana: aulasHoje.length * 5, // Simulação ou buscar histórico
       });
 
     } catch (error) {

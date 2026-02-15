@@ -20,16 +20,13 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
   const [selectedStudentToAdd, setSelectedStudentToAdd] = useState("");
   const { register, handleSubmit, reset } = useForm();
 
-  // Carrega alunos disponíveis ao abrir
   useEffect(() => {
     if (isOpen && aula) {
       reset({ diaSemana: aula.diaSemana, horarioInicio: aula.horarioInicio });
-      // Busca a lista completa de alunos para o select de adicionar
       alunosService.findAll().then(setAllStudents);
     }
   }, [isOpen, aula, reset]);
 
-  // Atualizar Horário
   const handleUpdateClass = async (data: any) => {
     if (!aula) return;
     try {
@@ -44,30 +41,25 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
     }
   };
 
-  // Adicionar Aluno
   const handleAddStudent = async () => {
     if (!aula || !selectedStudentToAdd) return;
     try {
       await aulasService.addAluno(aula.id, Number(selectedStudentToAdd));
       toast({ title: 'Aluno adicionado.' });
       setSelectedStudentToAdd("");
-      onUpdate(); // Atualiza a tela imediatamente
+      onUpdate(); 
     } catch {
       toast({ variant: 'destructive', title: 'Erro ao adicionar' });
     }
   };
 
-  // Remover Aluno (SEM CONFIRMAÇÃO E INSTANTÂNEO)
   const handleRemoveStudent = async (id: number) => {
     if (!aula) return;
     try {
-      // Chama a API direto
       await aulasService.removeAluno(aula.id, id);
       
-      // Feedback visual rápido (opcional, mas bom para UX)
       toast({ description: 'Aluno removido da aula.' });
       
-      // Atualiza a lista pai e este modal
       onUpdate(); 
     } catch {
       toast({ variant: 'destructive', title: 'Erro ao remover' });
@@ -83,14 +75,12 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
 
   if (!aula) return null;
 
-  // Filtra para não mostrar alunos que já estão na aula
   const studentsInClassIds = aula.alunos.map(a => a.id);
   const studentsAvailable = allStudents.filter(s => !studentsInClassIds.includes(s.id));
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Gerenciar Aula" description="Edite horário ou alunos" icon={<Users className="w-5 h-5 text-primary-foreground" />}>
       <div className="space-y-6">
-        {/* Formulário de Horário */}
         <form onSubmit={handleSubmit(handleUpdateClass)} className="p-4 rounded-xl bg-muted/30 border border-border space-y-3">
           <h4 className="font-semibold text-sm flex items-center gap-2"><Clock className="w-4 h-4 text-primary"/> Horário</h4>
           <div className="grid grid-cols-2 gap-3">
@@ -100,7 +90,6 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
           <button type="submit" className="w-full py-2 bg-primary/10 text-primary text-sm font-medium rounded-md hover:bg-primary/20 transition-colors">Salvar Horário</button>
         </form>
 
-        {/* Lista de Alunos */}
         <div>
           <h4 className="font-semibold text-sm mb-3">Alunos Matriculados ({aula.alunos.length})</h4>
           <div className="space-y-2 mb-3 max-h-[200px] overflow-y-auto">
@@ -115,7 +104,7 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
                    <span className="text-sm font-medium">{aluno.nome}</span>
                 </div>
                 <button 
-                  onClick={() => handleRemoveStudent(aluno.id)} // CLIQUE DIRETO
+                  onClick={() => handleRemoveStudent(aluno.id)}
                   className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-md transition-colors"
                   title="Remover com um clique"
                 >
@@ -125,7 +114,6 @@ export function ClassDetailsModal({ isOpen, onClose, aula, onUpdate }: ClassDeta
             ))}
           </div>
           
-          {/* Adicionar Novo */}
           <div className="flex gap-2 pt-2 border-t border-border">
             <select value={selectedStudentToAdd} onChange={(e) => setSelectedStudentToAdd(e.target.value)} className="flex-1 p-2 rounded-md border text-sm bg-background">
               <option value="">Adicionar aluno...</option>

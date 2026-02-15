@@ -13,9 +13,9 @@ const statusConfig = {
 
 export function RecentPayments({ pagamentos }: RecentPaymentsProps) {
   return (
-    <div className="card-educational">
+    <div className="card-educational h-[400px] flex flex-col">
       <h3 className="font-display text-lg font-bold text-foreground mb-6">Pagamentos Recentes</h3>
-      <div className="space-y-4">
+      <div className="space-y-4  overflow-y-auto min-h-0 custom-scrollbar">
         {pagamentos.length === 0 ? (
            <p className="text-sm text-muted-foreground">Nenhum registro recente.</p>
         ) : (
@@ -23,7 +23,7 @@ export function RecentPayments({ pagamentos }: RecentPaymentsProps) {
             const config = statusConfig[pagamento.status];
             const Icon = config.icon;
             return (
-              <div key={pagamento.id} className="flex items-center justify-between p-3 border-b border-border last:border-0">
+              <div key={pagamento.id} className="flex items-center mr-3 justify-between p-3 border-b border-border last:border-0">
                 <div>
                   <p className="font-medium text-sm text-foreground">{pagamento.aluno.nome}</p>
                   <p className="text-xs text-muted-foreground">{pagamento.mesReferencia}</p>

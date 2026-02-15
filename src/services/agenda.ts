@@ -1,6 +1,5 @@
 import { api } from './api';
 
-// Enum igual ao do Prisma
 export enum DiaSemana {
   DOMINGO = 'DOMINGO',
   SEGUNDA = 'SEGUNDA',
@@ -19,10 +18,10 @@ export interface Aluno {
 export interface Aula {
   id: number;
   diaSemana: DiaSemana;
-  horarioInicio: string; // "14:00"
-  horarioFim: string;    // "15:00"
+  horarioInicio: string;
+  horarioFim: string;  
   observacoes?: string;
-  alunos: Aluno[]; // Lista de alunos na aula
+  alunos: Aluno[]; 
   professorId: number;
 }
 
@@ -45,18 +44,15 @@ export const aulasService = {
     return response.data;
   },
 
-  // Atualiza horário/dia da aula (Move a aula inteira)
   async update(id: number, data: Partial<CreateAulaData>) {
     const response = await api.patch(`/aulas/${id}`, data);
     return response.data;
   },
 
-  // Adiciona um aluno específico na aula
   async addAluno(aulaId: number, alunoId: number) {
     await api.patch(`/aulas/${aulaId}/adicionar-aluno/${alunoId}`);
   },
 
-  // Remove um aluno específico da aula
   async removeAluno(aulaId: number, alunoId: number) {
     await api.patch(`/aulas/${aulaId}/remover-aluno/${alunoId}`);
   },

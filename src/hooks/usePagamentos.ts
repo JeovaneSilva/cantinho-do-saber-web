@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback } from 'react';
 import { useToast } from '@/hooks/use-toast';
 import { Pagamento, pagamentosService } from '@/services/pagamentos';
 
-// Função auxiliar para pegar o mês atual em português (Capitalizado)
 const getCurrentMonth = () => {
   const months = [
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
@@ -14,7 +13,6 @@ const getCurrentMonth = () => {
 export function usePagamentos() {
   const [pagamentos, setPagamentos] = useState<Pagamento[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  // Estado do mês selecionado (começa com o mês atual)
   const [selectedMonth, setSelectedMonth] = useState<string>(getCurrentMonth());
   
   const { toast } = useToast();
@@ -22,7 +20,6 @@ export function usePagamentos() {
   const fetchPagamentos = useCallback(async () => {
     try {
       setIsLoading(true);
-      // Passa o mês selecionado para o service
       const data = await pagamentosService.findAll(selectedMonth);
       setPagamentos(data);
     } catch (error) {
@@ -35,9 +32,8 @@ export function usePagamentos() {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedMonth, toast]); // Recria a função se o mês mudar
+  }, [selectedMonth, toast]); 
 
-  // Dispara sempre que o mês mudar
   useEffect(() => {
     fetchPagamentos();
   }, [fetchPagamentos]);
@@ -55,8 +51,8 @@ export function usePagamentos() {
   return { 
     pagamentos, 
     isLoading, 
-    selectedMonth,      // Exporta para a tela usar no select
-    setSelectedMonth,   // Exporta para a tela mudar
+    selectedMonth,  
+    setSelectedMonth,  
     refreshPagamentos: fetchPagamentos,
     createPagamento, 
     updatePagamento 

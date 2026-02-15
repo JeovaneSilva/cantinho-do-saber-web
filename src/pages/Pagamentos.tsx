@@ -19,7 +19,6 @@ const MONTHS = [
 ];
 
 export default function Pagamentos() {
-  // Pegamos o selectedMonth e o setSelectedMonth do hook
   const { pagamentos, isLoading, createPagamento, updatePagamento, selectedMonth, setSelectedMonth } = usePagamentos();
   
   const [searchTerm, setSearchTerm] = useState('');
@@ -34,7 +33,6 @@ export default function Pagamentos() {
     return matchesSearch && matchesFilter;
   });
 
-  // Cálculos (Baseados na lista filtrada pelo backend, ou seja, só do mês atual)
   const totalReceived = pagamentos.filter(p => p.status === 'PAGO').reduce((sum, p) => sum + Number(p.valor), 0);
   const totalPending = pagamentos.filter(p => p.status === 'PENDENTE').reduce((sum, p) => sum + Number(p.valor), 0);
   const totalOverdue = pagamentos.filter(p => p.status === 'ATRASADO').reduce((sum, p) => sum + Number(p.valor), 0);
@@ -42,7 +40,6 @@ export default function Pagamentos() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground">Pagamentos</h1>
@@ -52,7 +49,6 @@ export default function Pagamentos() {
           </div>
           
           <div className="flex flex-wrap gap-2">
-            {/* SELETOR DE MÊS */}
             <div className="relative">
                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                <select 
@@ -76,12 +72,10 @@ export default function Pagamentos() {
           </div>
         </div>
 
-        {/* Loading */}
         {isLoading ? (
            <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
         ) : (
           <>
-            {/* Stats Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate-scale-in">
               <div className="card-educational flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-success/15 flex items-center justify-center"><TrendingUp className="w-6 h-6 text-success" /></div>
@@ -97,7 +91,6 @@ export default function Pagamentos() {
               </div>
             </div>
 
-            {/* Filtros e Busca */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -130,7 +123,6 @@ export default function Pagamentos() {
               </div>
             </div>
 
-            {/* Tabela */}
             <div className="card-educational overflow-hidden p-0">
               <div className="overflow-x-auto">
                 <table className="w-full">

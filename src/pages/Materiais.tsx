@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { Search, Upload, FileText, Video, Image, Download, Folder, Grid, List, MoreVertical, Trash2, Loader2 } from 'lucide-react';
+import { Search, Upload, FileText, Image, Download, Folder, Grid, List, Trash2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useMateriais } from '@/hooks/useMateriais';
 import { materiaisService, materiaService, TipoMaterial } from '@/services/materiais';
@@ -18,11 +18,9 @@ export default function Materiais() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   
-  // Estado para armazenar as opções do filtro
   const [subjectOptions, setSubjectOptions] = useState<string[]>(['Todos']);
   const [selectedSubject, setSelectedSubject] = useState('Todos');
 
-  // Busca as matérias ao carregar a tela para preencher o filtro
   useEffect(() => {
     materiaService.findAll().then((data) => {
       const nomes = data.map(m => m.nome);
@@ -30,11 +28,9 @@ export default function Materiais() {
     }).catch(console.error);
   }, []);
 
-  // Filtros
   const filteredMaterials = materiais.filter((material) => {
     const matchesSearch = material.titulo.toLowerCase().includes(searchTerm.toLowerCase());
-    // Verifica se a matéria do arquivo bate com o filtro selecionado
-    // O operador ?. é importante caso o material venha sem matéria definida
+
     const matchesSubject = selectedSubject === 'Todos' || material.materia?.nome === selectedSubject;
     
     return matchesSearch && matchesSubject;
@@ -49,7 +45,6 @@ export default function Materiais() {
   return (
     <MainLayout>
       <div className="space-y-6">
-        {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 animate-fade-in">
           <div>
             <h1 className="text-3xl font-display font-bold text-foreground">Materiais Didáticos</h1>
@@ -64,7 +59,6 @@ export default function Materiais() {
           </button>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-scale-in">
           <div className="card-educational text-center">
             <div className="w-12 h-12 rounded-xl bg-destructive/15 flex items-center justify-center mx-auto mb-2"><FileText className="w-6 h-6 text-destructive" /></div>
@@ -80,7 +74,6 @@ export default function Materiais() {
           </div>
         </div>
 
-        {/* Toolbar */}
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -93,7 +86,6 @@ export default function Materiais() {
             />
           </div>
           
-          {/* Select Dinâmico de Matérias */}
           <select
             value={selectedSubject}
             onChange={(e) => setSelectedSubject(e.target.value)}
@@ -110,13 +102,12 @@ export default function Materiais() {
           </div>
         </div>
 
-        {/* Lista de Materiais */}
         {isLoading ? (
            <div className="flex justify-center py-12"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
         ) : filteredMaterials.length > 0 ? (
           viewMode === 'grid' ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredMaterials.map((material, index) => {
+              {filteredMaterials.map((material) => {
                 const config = typeConfig[material.tipo];
                 const TypeIcon = config.icon;
 
@@ -159,7 +150,6 @@ export default function Materiais() {
               })}
             </div>
           ) : (
-            // LIST VIEW
             <div className="card-educational p-0 overflow-hidden">
                 <table className="w-full">
                     <thead>

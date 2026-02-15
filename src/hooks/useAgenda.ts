@@ -8,7 +8,6 @@ export function useAgenda() {
   const [isLoading, setIsLoading] = useState(true);
   const { toast } = useToast();
 
-  // Mapa para converter index do Date.getDay() para Enum do Backend
   const dayMap: Record<number, DiaSemana> = {
     0: DiaSemana.DOMINGO,
     1: DiaSemana.SEGUNDA,
@@ -23,11 +22,9 @@ export function useAgenda() {
     try {
       setIsLoading(true);
       
-      // 1. Descobre o dia da semana da data atual selecionada
       const dayIndex = currentDate.getDay();
       const diaEnum = dayMap[dayIndex];
 
-      // 2. Busca no backend
       const data = await aulasService.findAll(diaEnum);
       setAulas(data);
     } catch (error) {
@@ -46,7 +43,6 @@ export function useAgenda() {
     fetchAulas();
   }, [fetchAulas]);
 
-  // Função para navegar entre as datas
   const selectDate = (date: Date) => {
     setCurrentDate(date);
   };

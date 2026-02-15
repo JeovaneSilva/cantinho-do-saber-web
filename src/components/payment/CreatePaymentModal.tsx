@@ -33,7 +33,6 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
     },
   });
 
-  // Busca alunos para o Select
   useEffect(() => {
     if (isOpen) {
       reset();
@@ -45,7 +44,7 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
     try {
       const payload = {
         ...data,
-        alunoId: Number(data.alunoId), // Converte string do select para number
+        alunoId: Number(data.alunoId), 
         valor: Number(data.valor.replace(',', '.')),
       };
 
@@ -68,7 +67,6 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         
-        {/* Seleção de Aluno */}
         <div>
           <label className="block text-sm font-medium mb-1.5">Aluno *</label>
           <div className="relative">
@@ -87,7 +85,6 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
         </div>
 
         <div className="grid grid-cols-2 gap-4">
-          {/* Mês Referência */}
           <div>
             <label className="block text-sm font-medium mb-1.5">Mês Referência *</label>
             <div className="relative">
@@ -97,7 +94,6 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
             {errors.mesReferencia && <p className="text-xs text-destructive mt-1">{errors.mesReferencia.message}</p>}
           </div>
 
-          {/* Valor */}
           <div>
             <label className="block text-sm font-medium mb-1.5">Valor (R$) *</label>
             <div className="relative">
@@ -108,7 +104,6 @@ export function CreatePaymentModal({ isOpen, onClose, onSubmit }: CreatePaymentM
           </div>
         </div>
 
-        {/* Data Vencimento */}
         <div>
           <label className="block text-sm font-medium mb-1.5">Data de Vencimento *</label>
           <div className="relative">

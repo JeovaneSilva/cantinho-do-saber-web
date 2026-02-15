@@ -22,18 +22,17 @@ export function EditPaymentModal({ isOpen, onClose, onSubmit, payment }: EditPay
     handleSubmit,
     reset,
     watch,
-    formState: { errors, isSubmitting },
+    formState: {  isSubmitting },
   } = useForm<PaymentFormData>({
     resolver: zodResolver(paymentSchema),
   });
 
-  // Observa o status para mostrar/esconder data de pagamento
   const statusAtual = watch('status');
 
   useEffect(() => {
     if (isOpen && payment) {
       reset({
-        alunoId: String(payment.alunoId), // Apenas para validar, fica disabled
+        alunoId: String(payment.alunoId),
         mesReferencia: payment.mesReferencia,
         dataVencimento: payment.dataVencimento ? new Date(payment.dataVencimento).toISOString().split('T')[0] : '',
         valor: String(payment.valor).replace('.', ','),
@@ -74,7 +73,6 @@ export function EditPaymentModal({ isOpen, onClose, onSubmit, payment }: EditPay
     >
       <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
         
-        {/* Status */}
         <div>
           <label className="block text-sm font-medium mb-1.5">Status do Pagamento</label>
           <div className="relative">
@@ -90,7 +88,6 @@ export function EditPaymentModal({ isOpen, onClose, onSubmit, payment }: EditPay
           </div>
         </div>
 
-        {/* Se for PAGO, pede a data */}
         {statusAtual === 'PAGO' && (
            <div className="animate-fade-in">
              <label className="block text-sm font-medium mb-1.5 text-success">Data do Pagamento</label>
@@ -102,7 +99,6 @@ export function EditPaymentModal({ isOpen, onClose, onSubmit, payment }: EditPay
            </div>
         )}
 
-        {/* Campos Editáveis */}
         <div className="grid grid-cols-2 gap-4">
            <div>
               <label className="block text-sm font-medium mb-1.5">Vencimento</label>

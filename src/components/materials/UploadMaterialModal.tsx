@@ -16,10 +16,9 @@ export function UploadMaterialModal({ isOpen, onClose, onSuccess }: UploadMateri
   const { register, handleSubmit, reset } = useForm();
   
   const [file, setFile] = useState<File | null>(null);
-  const [materias, setMaterias] = useState<Materia[]>([]); // Estado para as matérias
+  const [materias, setMaterias] = useState<Materia[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Busca as matérias quando o modal abre
   useEffect(() => {
     if (isOpen) {
       materiaService.findAll()
@@ -45,7 +44,6 @@ export function UploadMaterialModal({ isOpen, onClose, onSuccess }: UploadMateri
       const formData = new FormData();
       formData.append('titulo', data.titulo);
       formData.append('tipo', data.tipo);
-      // Converte para número pois o select retorna string
       formData.append('materiaId', data.materiaId); 
       formData.append('arquivo', file); 
 
@@ -96,7 +94,6 @@ export function UploadMaterialModal({ isOpen, onClose, onSuccess }: UploadMateri
           </div>
         </div>
 
-        {/* Área de Drop/Input Arquivo */}
         <div className="border-2 border-dashed border-border rounded-xl p-6 text-center hover:bg-muted/50 transition-colors cursor-pointer relative">
           <input 
             type="file" 
