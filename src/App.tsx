@@ -4,7 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Index from "./pages/Index";
+import Index from "./pages/Index"; 
 import Alunos from "./pages/Alunos";
 import Agenda from "./pages/Agenda";
 import Pagamentos from "./pages/Pagamentos";
@@ -14,6 +14,7 @@ import Dashboard from "./pages/Dashboard";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import { PrivateRoute } from "./routes/PrivateRoute";
+import { PublicRoute } from "./routes/PublicRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +26,10 @@ const App = () => (
       <BrowserRouter>
         <AuthProvider>
           <Routes>
-            <Route path="/" element={<Index />} /> 
+            
+            <Route element={<PublicRoute />}>
+              <Route path="/" element={<Index />} /> 
+            </Route>
 
             <Route element={<PrivateRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
@@ -36,6 +40,7 @@ const App = () => (
             </Route>
 
             <Route path="*" element={<NotFound />} />
+            
           </Routes>
         </AuthProvider>
       </BrowserRouter>
