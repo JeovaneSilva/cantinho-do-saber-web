@@ -33,7 +33,7 @@ export function Sidebar() {
       {/* Mobile menu button */}
       <button
         onClick={() => setMobileOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-primary text-primary-foreground shadow-lg"
+        className="lg:hidden m-3 z-50 p-2 rounded-lg bg-primary text-primary-foreground shadow-lg"
       >
         <Menu className="w-6 h-6" />
       </button>

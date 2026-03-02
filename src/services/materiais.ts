@@ -15,6 +15,10 @@ export interface Material {
   materia?: {
     nome: string;
   };
+  alunoId?: number | null; 
+  aluno?: {     
+    nome: string;
+  };
   createdAt: string;
 }
 
@@ -38,9 +42,6 @@ export const materiaisService = {
     await api.delete(`/materiais-didaticos/${id}`);
   },
   
-  getDownloadUrl(filename: string) {
-      return `http://localhost:3000/uploads/${filename}`;
-  }
 };
 
 export const materiaService = {
