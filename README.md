@@ -1,73 +1,32 @@
-# Welcome to your Lovable project
+# 🎓 Cantinho do Saber - Web App
 
-## Project info
+A interface de usuário (SPA) da plataforma educacional "Cantinho do Saber". Um painel administrativo moderno e responsivo focado na experiência do usuário para a gestão de alunos, aulas, finanças e compartilhamento de materiais didáticos.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Tecnologias Utilizadas
 
-## How can I edit this code?
+* **Framework:** React (via [Vite](https://vitejs.dev/))
+* **Linguagem:** TypeScript
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+* **Componentes:** [shadcn/ui](https://ui.shadcn.com/) (Radix UI)
+* **Ícones:** [Lucide React](https://lucide.dev/)
+* **Roteamento:** React Router Dom (v6)
+* **Gerenciamento de Estado/Fetch:** React Query (TanStack Query)
+* **Deploy:** [Vercel](https://vercel.com/)
 
-There are several ways of editing your application.
+## ✨ Principais Funcionalidades
 
-**Use Lovable**
+* **Roteamento Inteligente:** Implementação de `PrivateRoute` e `PublicRoute` para redirecionamento automático baseado no estado do Token (ex: usuários logados são enviados direto ao Dashboard).
+* **Dashboard Interativo:** Visão geral da escola/tutoria.
+* **Gestão de Materiais Didáticos:**
+    * Interface com suporte a alternância de visualização (Grid e Lista).
+    * Filtros dinâmicos por Matéria e Aluno, além de busca por texto.
+    * Upload de materiais (PDF, Imagens) integrado com o back-end.
+    * Visualização direta (Inline) de PDFs e imagens no navegador através de URLs do Supabase.
+* **Gestão Completa:** Telas dedicadas para controle de Alunos, Agenda de Aulas e Pagamentos.
+* **Feedback Visual:** Utilização de Toasters e Sonner para notificações de sucesso/erro (ex: confirmação de upload ou remoção de arquivo).
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## 🛠️ Configuração e Execução Local
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+### Pré-requisitos
+* Node.js (v18+)
+* A API do Back-end rodando localmente ou em produção.
